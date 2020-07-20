@@ -6736,22 +6736,48 @@ function resolveSSRNode(node) {
   if (typeof node === "function") node = resolveSSRNode(node());
   return typeof node === "string" ? node : JSON.stringify(node);
 }
-},{"mobx":"node_modules/mobx/lib/mobx.module.js"}],"state.js":[function(require,module,exports) {
+},{"mobx":"node_modules/mobx/lib/mobx.module.js"}],"state.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
 
-var _mobx = require("mobx");
+var mobx_1 = require("mobx");
 
-var _default = (0, _mobx.observable)({
+var Counters =
+/** @class */
+function () {
+  function Counters() {}
+
+  return Counters;
+}();
+
+exports.default = mobx_1.observable({
   list: [2, 3, 4, 5, 6]
 });
+},{"mobx":"node_modules/mobx/lib/mobx.module.js"}],"Test.js":[function(require,module,exports) {
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = _default;
-},{"mobx":"node_modules/mobx/lib/mobx.module.js"}],"index.js":[function(require,module,exports) {
+
+var _mobxJsx = require("mobx-jsx");
+
+const _tmpl$ = (0, _mobxJsx.template)(`<div></div>`, 2);
+
+function _default(_ref) {
+  var count = _ref.count;
+  return function () {
+    var _el$ = _tmpl$.cloneNode(true);
+
+    (0, _mobxJsx.insert)(_el$, count);
+    return _el$;
+  }();
+}
+},{"mobx-jsx":"node_modules/mobx-jsx/dist/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _mobxJsx = require("mobx-jsx");
@@ -6760,50 +6786,35 @@ var _mobx = require("mobx");
 
 var _state = _interopRequireDefault(require("./state"));
 
+var _Test = _interopRequireDefault(require("./Test"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const _tmpl$ = (0, _mobxJsx.template)(`<div><span></span><ul></ul></div>`, 6),
-      _tmpl$2 = (0, _mobxJsx.template)(`<li></li>`, 2);
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+const _tmpl$ = (0, _mobxJsx.template)(`<div></div>`, 2);
 
 function App() {
   var state = (0, _mobx.observable)({
     counter: 0
   }),
       timer = setInterval(function () {
-    _state.default.list = [].concat(_toConsumableArray(_state.default.list), [state.counter++]); // State.list.unshift(state.counter);
+    _state.default.list.push(state.counter++); // State.list.unshift(state.counter);
+
   }, 1000);
   (0, _mobxJsx.cleanup)(function () {
     return clearInterval(timer);
   });
   return function () {
-    var _el$ = _tmpl$.cloneNode(true),
-        _el$2 = _el$.firstChild,
-        _el$3 = _el$2.nextSibling;
+    var _el$ = _tmpl$.cloneNode(true);
 
-    (0, _mobxJsx.insert)(_el$2, function () {
-      return state.counter;
-    });
-    (0, _mobxJsx.insert)(_el$3, function () {
-      return (0, _mobxJsx.map)(_state.default.list, function (d) {
+    (0, _mobxJsx.insert)(_el$, function () {
+      return _state.default.list.map(function (d) {
         return function () {
-          var _el$4 = _tmpl$2.cloneNode(true);
+          var _el$2 = _tmpl$.cloneNode(true);
 
-          (0, _mobxJsx.insert)(_el$4, function () {
-            return Math.random() + "" + d;
-          });
-          return _el$4;
+          (0, _mobxJsx.insert)(_el$2, d < 5 && (0, _mobxJsx.createComponent)(_Test.default, {
+            count: d
+          }));
+          return _el$2;
         }();
       });
     });
@@ -6812,7 +6823,7 @@ function App() {
 }
 
 (0, _mobxJsx.render)(App, document.getElementById("app"));
-},{"mobx-jsx":"node_modules/mobx-jsx/dist/index.js","mobx":"node_modules/mobx/lib/mobx.module.js","./state":"state.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"mobx-jsx":"node_modules/mobx-jsx/dist/index.js","mobx":"node_modules/mobx/lib/mobx.module.js","./state":"state.ts","./Test":"Test.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -6840,7 +6851,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61985" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51348" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
